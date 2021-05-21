@@ -71,22 +71,21 @@ variable "pe_subnet_name" {
 
 ## Module
 
-module "create" {
-    source                    = "github.com/UKHO/route-table-additional-routes"
-    providers = {
-        azurerm.hub   = azurerm.hub
-        azurerm.spoke = azurerm.test
-    }    
-    spokerg                 =  var.spokerg
-    hubrg                   =  var.hubrg
-    hubrt                   =  var.hubrt
-    id                      =  var.id
-    routetable              =  var.routetable
-    spokeroute              =  var.spokeroute
-    hubroute                =  var.hubroute
-    hop                     =  var.hop
-    subnets                 =  var.SUBNETS
-    hubprefix               =  var.hubprefix
-    spokeprefix             =  var.spokeprefix
-}
-
+module "setup" {
+  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
+  providers = {
+    azurerm.src = azurerm.alias
+  }
+  
+  dns_zone                        = "var.dns_zone"
+  vnet_link                       = "var.vnet_link"
+  location                        = "var.location"
+  network_type                    = "var.network_type"
+  private_connection              = "var.private_connection"
+  zone_group                      = "var.zone_group"
+  pe_identity                     = "var.pe_identity"
+  pe_environment                  = "var.pe_environment"
+  pe_vnet_rg                      = "var.pe_vnet_rg"
+  pe_vnet_name                    = "var.pe_vnet_name"
+  pe_subnet_name                  = "var.pe_subnet_name"
+ }
