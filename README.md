@@ -1,4 +1,4 @@
-# Terraform Module: for Azure vnet with nsg
+# Terraform Module: for Azure route table with multiple routes
 
 ## Required Resources
 
@@ -8,106 +8,64 @@
 ## Usage
 
 ```terraform
-variable "address" {
-  default = "10.0.1.0/24"
-}
+# Route Tables Additional Routes
 
+## Creating multiple routes under the spoke and hub tables
+
+## Usage Vars
+
+variable "spokerg" {
+ #description = "name of spoke resource group"
+}
+variable "hubrg" {
+ #description = "name of hub resource group"
+}
+variable "hubrt" {
+  #description = "hub route table name" 
+}
+variable "id" {
+  #description = "environment you're deploying too"
+}
+variable "routetable" {
+  #description = "spoke route table"
+}
+variable "spokeroute" {
+  #description = "Spoke routetable route array [""]
+}
+variable "hubroute" {
+  #description = "Hub routetable routes" [""]
+}
+variable "hop" {
+  #description = "The type of hop you require in a array" ["VirtualNetworkGateway"]
+}
 variable "subnets" {
-  default = [
-    {
-      name = "service-subnet"
-      number = 0
-      delegation = {
-        name = "Microsoft.Web/serverFarms"
-        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-      }
-    }
-  ]
+ #description = "array contains names of subnets, the subnet array used on the tfmodule-azure-vnet-with-nsg fits this expected pattern" 
+}
+variable "spokeprefix" {
+  #description = "Spoke ip route array" [""]
+}
+variable "hubprefix" {
+  #description = "hub ip route array" [""]  
 }
 
-variable "endpoints" {
-  default = ["Microsoft.Sql", "Microsoft.Storage", "Microsoft.KeyVault"]
+## Module
+
+module "create" {
+    source                    = "github.com/UKHO/route-table-additional-routes"
+    providers = {
+        azurerm.hub   = azurerm.hub
+        azurerm.spoke = azurerm.test
+    }    
+    spokerg                 =  var.spokerg
+    hubrg                   =  var.hubrg
+    hubrt                   =  var.hubrt
+    id                      =  var.id
+    routetable              =  var.routetable
+    spokeroute              =  var.spokeroute
+    hubroute                =  var.hubroute
+    hop                     =  var.hop
+    subnets                 =  var.SUBNETS
+    hubprefix               =  var.hubprefix
+    spokeprefix             =  var.spokeprefix
 }
 
-variable "tags" {
-  type = map
-  default = {
-    ENVIRONMENT      = "Dev"
-  }
-}
-
-variable "subscriptionId {
-default="12312312312-312-312-3-12"
-}
-
-provider "azurerm" {
-  version = "=2.20.0"
-  features {}
-  alias           = "alias"
-  subscription_id = var.SubscriptionId
-}
-
-
-resource "azurerm_resource_group" "gg" {
-  name = "existing-rg"
-  location = "UKSouth"
-  tags = var.tags
-}
-
-module "setup" {
-  source                        = "github.com/ukho/tfmodule-azure-vnet-with-nsg?ref=0.5.1"
-  providers = {
-    azurerm.src = azurerm.alias
-  }
-  prefix                        = "Prefix"
-  tags                          = "${var.tags}"
-  resource_group                = azurerm_resource_group.gg
-  address                       = "${var.address}"
-  subnets                       = "${var.subnets}"
-  newbits                       = "4"
-  service_endpoints             = "${var.endpoints}"
-}
-```
-
-if you arent woried about the version you use, latest can be retrieved by removing `?ref=x.y.z` from source path
-
-## Example for subnets
-
-subnets are created using an array expecting a `name` and a `number`, number should increment from 0.
-
-It is also worth noting, the addition of newbits to the base address should not exceed /29. Azure has the habit of absorbing 5 ip addresses per subnet. so the smallest you could go it a range of 8 ips (/29). with a newbits of 4, this would imply a minimum base of /25 is needed.
-
-```terraform
-[{
-  name = "subnet1-subnet"
-  number = 0
-},
-{
-  name = "subnet2-subnet"
-  number = 1
-}]
-```
-## Example for subnets with delegation
-
-In the instances where you want to delegate a specific subnet the addition of a deletagation value will allow for this setting.
-
-In this example we are assigning the first subnet to be used for a serverfarm.
-
-```terraform
-[{
-  name = "subnet1-subnet"
-  number = 0
-  delegation = {
-    name = "Microsoft.Web/serverFarms"
-    actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-  }
-},
-{
-  name = "subnet2-subnet"
-  number = 1
-}]
-```
-
-## Service Endpoints
-
-An example of `service_endpoints` is ["Microsoft.Sql", "Microsoft.Storage", "Microsoft.KeyVault"]
