@@ -1,70 +1,113 @@
-# Route Tables Additional Routes
+# Terraform Module: for Azure vnet with nsg
 
-## Creating multiple routes under the spoke and hub tables
+## Required Resources
 
-## Usage Vars
+- `Resource Group` exists or is created external to the module.
+- `Provider` must be created external to the module.
 
-variable "dns_zone" {
-    description = "alias to create private dns zone - be aware this is dependant on the endpoint"
-    default = "privatelink.azurewebsites.net"
+## Usage
+
+```terraform
+variable "address" {
+  default = "10.0.1.0/24"
 }
 
-variable "vnet_link" {
-    description = "alias of the virtual network link"
-    default = ""  
+variable "subnets" {
+  default = [
+    {
+      name = "service-subnet"
+      number = 0
+      delegation = {
+        name = "Microsoft.Web/serverFarms"
+        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+      }
+    }
+  ]
 }
 
-variable "location" {
-    default = "uksouth"
+variable "endpoints" {
+  default = ["Microsoft.Sql", "Microsoft.Storage", "Microsoft.KeyVault"]
 }
 
-variable "network_type" {
-  description = "type of connection"
-  default = "network"
+variable "tags" {
+  type = map
+  default = {
+    ENVIRONMENT      = "Dev"
+  }
 }
 
-variable "private_connection" {
-    description = "endpoint resource id"	 
-    default = "/subscriptions/SUBID/resourceGroups/RGNAME/providers/Microsoft.Web/sites/APP_SERVICE_NAME" 
+variable "subscriptionId {
+default="12312312312-312-312-3-12"
 }
 
-variable "zone_group" {
-    description = "private dns zone group"
-    default = ""   
+provider "azurerm" {
+  version = "=2.20.0"
+  features {}
+  alias           = "alias"
+  subscription_id = var.SubscriptionId
 }
 
-variable "pe_identity" {
-    description = "identity that will create all the private endpoint resources required"
-    default = ""
-}
 
-variable "pe_environment" {
-    description = "environment for private endpoint"
-    default = "dev | prd | qa"
+resource "azurerm_resource_group" "gg" {
+  name = "existing-rg"
+  location = "UKSouth"
+  tags = var.tags
 }
-
-variable "pe_vnet_rg" {
-    description = "this is the rg for the spoke vnet"
-    default = ""
-}
-
-variable "pe_vnet_name" {
-    description = "vnet name for the private endpoint"
-    default = ""
-}
-
-variable "pe_subnet_name" {
-    description = "subname that the private endpoint will associate"
-    default = ""
-}
-
-## Module
 
 module "setup" {
-  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
+  source                        = "github.com/ukho/tfmodule-azure-vnet-with-nsg?ref=0.5.1"
   providers = {
     azurerm.src = azurerm.alias
   }
-  pr                        = "${var.
-
+  prefix                        = "Prefix"
+  tags                          = "${var.tags}"
+  resource_group                = azurerm_resource_group.gg
+  address                       = "${var.address}"
+  subnets                       = "${var.subnets}"
+  newbits                       = "4"
+  service_endpoints             = "${var.endpoints}"
 }
+```
+
+if you arent woried about the version you use, latest can be retrieved by removing `?ref=x.y.z` from source path
+
+## Example for subnets
+
+subnets are created using an array expecting a `name` and a `number`, number should increment from 0.
+
+It is also worth noting, the addition of newbits to the base address should not exceed /29. Azure has the habit of absorbing 5 ip addresses per subnet. so the smallest you could go it a range of 8 ips (/29). with a newbits of 4, this would imply a minimum base of /25 is needed.
+
+```terraform
+[{
+  name = "subnet1-subnet"
+  number = 0
+},
+{
+  name = "subnet2-subnet"
+  number = 1
+}]
+```
+## Example for subnets with delegation
+
+In the instances where you want to delegate a specific subnet the addition of a deletagation value will allow for this setting.
+
+In this example we are assigning the first subnet to be used for a serverfarm.
+
+```terraform
+[{
+  name = "subnet1-subnet"
+  number = 0
+  delegation = {
+    name = "Microsoft.Web/serverFarms"
+    actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+  }
+},
+{
+  name = "subnet2-subnet"
+  number = 1
+}]
+```
+
+## Service Endpoints
+
+An example of `service_endpoints` is ["Microsoft.Sql", "Microsoft.Storage", "Microsoft.KeyVault"]
