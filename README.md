@@ -70,7 +70,7 @@ variable "pe_subnet_name" {
 
 
 module "privatendpoint" {
-  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.0"
+  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
   providers = {
     azurerm.src = azurerm.alias
   }
