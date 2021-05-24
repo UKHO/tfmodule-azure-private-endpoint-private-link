@@ -1,4 +1,4 @@
-# Terraform Module: for Azure route table with multiple routes
+# Terraform Module: for Azure Private Endpoints
 
 ## Required Resources
 
