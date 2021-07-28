@@ -1,51 +1,77 @@
 locals {
-  subscription_id     = "SUB_ID"
+  subscription_id     = "8e29b41f-08e3-4758-8468-5f9a0d299990"
+  hub_subscription_id = "282900b8-5415-4137-afcc-fd13fe9a64a7"
   pe_name = "m-${var.pe_identity}-${var.pe_environment}-pe"
   pe_rg_name = "m-${var.pe_identity}-rg" 
 }
 
 provider "azurerm" {
-  alias = "src"
+  features {}
+  alias = "hub"
+  subscription_id = local.hub_subscription_id
+}
+
+provider "azurerm" {
+  features {}
+  alias = "eespe"
+  subscription_id = local.subscription_id
+}
+
+terraform {
+  backend "azurerm" {
+    resource_group_name  = ""
+    storage_account_name = ""
+    container_name       = "tfstate"
+    key                  = ""
+  }
 }
 
 data "azurerm_resource_group" "main" {
+ provider = azurerm.eespe
  name = var.pe_vnet_rg
 } 
 
 data "azurerm_virtual_network" "main" {
+ provider            = azurerm.eespe
  name                = var.pe_vnet_name
  resource_group_name = data.azurerm_resource_group.main.name
 }
 
 data "azurerm_subnet" "subnet" {
+ provider             = azurerm.eespe
  name                 = var.pe_subnet_name
  virtual_network_name = data.azurerm_virtual_network.main.name
  resource_group_name  = data.azurerm_resource_group.main.name 
 }
 
 resource "azurerm_resource_group" "rg" { 
- provider = azurerm.src 
+ provider = azurerm.eespe 
  name = local.pe_rg_name
  location = var.location  
 }
 
-resource "azurerm_private_dns_zone" "main" {
-  provider            = azurerm.src
+data "azurerm_resource_group" "dnsrg" {
+  provider           = azurerm.hub
+  name               = "engineering-rg"  
+}
+
+data "azurerm_private_dns_zone" "main" {
+  provider            = azurerm.hub
   name                = var.dns_zone
-  resource_group_name = azurerm_resource_group.rg.name  
+  resource_group_name = data.azurerm_resource_group.dnsrg.name  
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "main" {
-  provider              = azurerm.src
+  provider              = azurerm.hub
   name                  = var.vnet_link
-  resource_group_name   = azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.main.name
+  resource_group_name   = data.azurerm_resource_group.dnsrg.name
+  private_dns_zone_name = data.azurerm_private_dns_zone.main.name
   virtual_network_id    = data.azurerm_virtual_network.main.id
 }
 
 resource "azurerm_private_endpoint" "main" {
-  depends_on         = [azurerm_resource_group.rg]  
-  provider            = azurerm.src
+  depends_on          = [azurerm_resource_group.rg]  
+  provider            = azurerm.eespe
   name                = local.pe_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -55,14 +81,14 @@ resource "azurerm_private_endpoint" "main" {
     name                           = var.network_type
     private_connection_resource_id = var.private_connection
     is_manual_connection           = false
-    subresource_names             = ["sites"]    
+    subresource_names              = ["sites"]    
   } 
 
   private_dns_zone_group {
     name                 = var.zone_group
-    private_dns_zone_ids = [azurerm_private_dns_zone.main.id]                      
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.main.id]                      
   }
 }
 
-#enforce_private_link_endpoint_network_policies = true This need to be turned off to deploy pe
+#enforce_private_link_endpoint_network_policies = true  This need to be turned off to deploy pe, false to turn on.
 #enforce_private_link_service_network_policies  = true -> false
