@@ -1,6 +1,6 @@
 locals {
-  subscription_id     = "8e29b41f-08e3-4758-8468-5f9a0d299990"
-  hub_subscription_id = "282900b8-5415-4137-afcc-fd13fe9a64a7"
+  subscription_id     = ""
+  hub_subscription_id = ""
   pe_name = "m-${var.pe_identity}-${var.pe_environment}-pe"
   pe_rg_name = "m-${var.pe_identity}-rg" 
 }
