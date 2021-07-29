@@ -1,20 +1,13 @@
 locals {
-  subscription_id     = ""
-  hub_subscription_id = ""
   pe_name = "m-${var.pe_identity}-${var.pe_environment}-pe"
   pe_rg_name = "m-${var.pe_identity}-rg" 
 }
 
 provider "azurerm" {
-  features {}
   alias = "hub"
-  subscription_id = local.hub_subscription_id
-}
 
 provider "azurerm" {
-  features {}
   alias = "eespe"
-  subscription_id = local.subscription_id
 }
 
 terraform {
