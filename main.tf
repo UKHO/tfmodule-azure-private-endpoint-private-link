@@ -87,7 +87,7 @@ resource "azurerm_private_endpoint" "main" {
   private_dns_zone_group {
     name                 = var.zone_group
     private_dns_zone_ids = [data.azurerm_private_dns_zone.main.id]                      
-  }
+  } 
 }
 
 #enforce_private_link_endpoint_network_policies = true  This need to be turned off to deploy pe, false to turn on.
