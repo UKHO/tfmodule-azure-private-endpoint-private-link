@@ -73,6 +73,7 @@ module "privatendpoint" {
   source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
   providers = {
     azurerm.src = azurerm.alias
+    azurerm.src = azurerm.alias
   }
   
   dns_zone                        = "${var.dns_zone}"
