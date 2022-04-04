@@ -7,7 +7,7 @@
 
 ## Usage
 
-## Remember to disable network policies for to add PE.
+## Remember to disable network policies to add PE.
 
 az network vnet subnet update --name SUBNETNAME-subnet --resource-group NAME-RG --vnet-name NAME-vnet --disable-private-endpoint-network-policies true
 False will re-enable
