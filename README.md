@@ -73,6 +73,16 @@ variable "pe_subnet_name" {
     default = ""
 }
 
+variable "dns_resource_group" {
+    description = "dns resource group"
+    default="domain-rg"
+}
+
+variable "subresource_names" {
+    description = "array of sub resources"
+    default = ["sites"]
+}
+
 
 module "privatendpoint" {
   source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
@@ -92,4 +102,6 @@ module "privatendpoint" {
   pe_vnet_rg                      = "${var.pe_vnet_rg}"
   pe_vnet_name                    = "${var.pe_vnet_name}"
   pe_subnet_name                  = "${var.pe_subnet_name}"
+  dns_resource_group              = "some-rg"
+  subresource_names               = ["sites"]
  }
