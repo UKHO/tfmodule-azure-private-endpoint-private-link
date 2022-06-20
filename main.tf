@@ -37,7 +37,7 @@ resource "azurerm_resource_group" "rg" {
 
 data "azurerm_resource_group" "dnsrg" {
   provider           = azurerm.hub
-  name               = "engineering-rg"  
+  name               = var.dns_resource_group
 }
 
 data "azurerm_private_dns_zone" "main" {
@@ -66,7 +66,7 @@ resource "azurerm_private_endpoint" "main" {
     name                           = var.network_type
     private_connection_resource_id = var.private_connection
     is_manual_connection           = false
-    subresource_names              = ["sites"]    
+    subresource_names              = var.subresource_names 
   } 
 
   private_dns_zone_group {
