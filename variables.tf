@@ -57,6 +57,11 @@ variable "dns_resource_group" {
     default="domain-rg"
 }
 
+variable "subresource_names" {
+    description = "array of sub resources"
+    default = ["sites"]
+}
+
 
 
 
