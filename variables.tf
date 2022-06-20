@@ -52,6 +52,10 @@ variable "pe_subnet_name" {
     default = ""
 }
 
+variable "dns_resource_group" {
+    description = "dns resource group"
+    default="domain-rg"
+}
 
 
 
