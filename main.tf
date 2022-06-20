@@ -7,38 +7,29 @@ provider "azurerm" {
   alias = "hub"
 
 provider "azurerm" {
-  alias = "eespe"
-}
-
-terraform {
-  backend "azurerm" {
-    resource_group_name  = ""
-    storage_account_name = ""
-    container_name       = "tfstate"
-    key                  = ""
-  }
+  alias = "spoke"
 }
 
 data "azurerm_resource_group" "main" {
- provider = azurerm.eespe
+ provider = azurerm.spoke
  name = var.pe_vnet_rg
 } 
 
 data "azurerm_virtual_network" "main" {
- provider            = azurerm.eespe
+ provider            = azurerm.spoke
  name                = var.pe_vnet_name
  resource_group_name = data.azurerm_resource_group.main.name
 }
 
 data "azurerm_subnet" "subnet" {
- provider             = azurerm.eespe
+ provider             = azurerm.spoke
  name                 = var.pe_subnet_name
  virtual_network_name = data.azurerm_virtual_network.main.name
  resource_group_name  = data.azurerm_resource_group.main.name 
 }
 
 resource "azurerm_resource_group" "rg" { 
- provider = azurerm.eespe 
+ provider = azurerm.spoke 
  name = local.pe_rg_name
  location = var.location  
 }
@@ -64,7 +55,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "main" {
 
 resource "azurerm_private_endpoint" "main" {
   depends_on          = [azurerm_resource_group.rg]  
-  provider            = azurerm.eespe
+  provider            = azurerm.spoke
   name                = local.pe_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
