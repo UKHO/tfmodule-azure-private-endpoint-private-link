@@ -1,14 +1,17 @@
 locals {
   pe_name = "m-${var.pe_identity}-${var.pe_environment}-pe"
   pe_rg_name = "m-${var.pe_identity}-rg" 
+  coreservicessubscriptionid = "" ## replace with the coreservicessubscriptionid from the .tfvars file
+  spokesubscriptionid = "" ## replace with the spokesubscription id from the .tfvars file
 }
 
-provider "azurerm" {
-  alias = "hub"
-}
-
-provider "azurerm" {
-  alias = "spoke"
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"  
+      configuration_aliases = [azurerm.hub, azurerm.spoke]
+    }    
+  }
 }
 
 data "azurerm_resource_group" "main" {
@@ -29,10 +32,9 @@ data "azurerm_subnet" "subnet" {
  resource_group_name  = data.azurerm_resource_group.main.name 
 }
 
-resource "azurerm_resource_group" "rg" { 
+data "azurerm_resource_group" "privateendpointrg" { 
  provider = azurerm.spoke 
- name = local.pe_rg_name
- location = var.location  
+ name =     var.pe_resourcegroupname
 }
 
 data "azurerm_resource_group" "dnsrg" {
@@ -51,15 +53,15 @@ resource "azurerm_private_dns_zone_virtual_network_link" "main" {
   name                  = var.vnet_link
   resource_group_name   = data.azurerm_resource_group.dnsrg.name
   private_dns_zone_name = data.azurerm_private_dns_zone.main.name
-  virtual_network_id    = data.azurerm_virtual_network.main.id
+  virtual_network_id    = data.azurerm_virtual_network.main.id 
 }
 
 resource "azurerm_private_endpoint" "main" {
-  depends_on          = [azurerm_resource_group.rg]  
+  depends_on          = [data.azurerm_resource_group.privateendpointrg]  
   provider            = azurerm.spoke
   name                = local.pe_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  resource_group_name = data.azurerm_resource_group.privateendpointrg.name
   subnet_id           = data.azurerm_subnet.subnet.id
 
   private_service_connection {
