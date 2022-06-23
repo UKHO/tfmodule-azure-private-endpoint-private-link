@@ -61,7 +61,10 @@ variable "subresource_names" {
     description = "array of sub resources"
     default = ["sites"]
 }
-
+variable "pe_resourcegroupname" {
+    description = "resource group name for private end point"
+    default = ""
+}
 
 
 
