@@ -32,27 +32,42 @@ variable "pe_identity" {
     default = ""
 }
 
-variable "pe_environment" {
+variable "environment" {
     description = "environment for private endpoint"
     default = "dev | prd | qa"
 }
 
-variable "pe_vnet_rg" {
+variable "vnet_resource_group_name" {
     description = "this is the rg for the spoke vnet"
     default = ""
 }
 
-variable "pe_vnet_name" {
+variable "vnet_name" {
     description = "vnet name for the private endpoint"
     default = ""
 }
 
-variable "pe_subnet_name" {
-    description = "subname that the private endpoint will associate"
+variable "vnet_address_prefixes" {
+    description = "vnet address prefix"
+    default = ["0.0.0.0/29"]
+}
+
+variable "subnet_name" {
+    description = "subnet name for private endpoint"
     default = ""
 }
 
-variable "dns_resource_group" {
+variable "subnet_number" {
+    description = "subnet number for private endpoint"
+    default = 0
+}
+
+variable "subnet_newbit" {
+    description = "subnet newbit for private endpoint"
+    default = 3
+}
+
+variable "dns_resource_group_name" {
     description = "dns resource group"
     default="domain-rg"
 }
