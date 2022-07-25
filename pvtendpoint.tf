@@ -1,10 +1,9 @@
 resource "azurerm_private_endpoint" "main" {
-  depends_on          = [azurerm_resource_group.rg]  
   provider            = azurerm.spoke
-  name                = local.pe_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  subnet_id           = data.azurerm_subnet.subnet.id
+  name                = local.private_endpoint_name
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  subnet_id           = azurerm_subnet.spokepvtsubnet.id
 
   private_service_connection {
     name                           = var.network_type

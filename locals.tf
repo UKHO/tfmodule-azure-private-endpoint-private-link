@@ -1,4 +1,3 @@
 locals {
-  pe_name = "m-${var.pe_identity}-${var.pe_environment}-pe"
-  pe_rg_name = "m-${var.pe_identity}-rg" 
+  private_endpoint_name = "m-${var.private_endpoint_name}-${var.environment}-pe"
 }
