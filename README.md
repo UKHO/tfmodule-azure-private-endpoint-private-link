@@ -26,7 +26,6 @@ variable "dns_zone" {
 
 variable "vnet_link" {
     description = "alias of the virtual network link"
-    default = ""  
 }
 
 variable "location" {
@@ -45,37 +44,51 @@ variable "private_connection" {
 
 variable "zone_group" {
     description = "private dns zone group"
-    default = ""   
 }
 
-variable "pe_identity" {
-    description = "identity that will create all the private endpoint resources required"
-    default = ""
+variable "private_endpoint_name" {
+    description = "name that will be used to create the private endpoint resources required"
 }
 
-variable "pe_environment" {
+variable "environment" {
     description = "environment for private endpoint"
     default = "dev | prd | qa"
 }
 
-variable "pe_vnet_rg" {
+variable "resource_group_name" {
     description = "this is the rg for the spoke vnet"
-    default = ""
+    default = "m-spokeconfig-rg"
 }
 
-variable "pe_vnet_name" {
+variable "vnet_name" {
     description = "vnet name for the private endpoint"
-    default = ""
 }
 
-variable "pe_subnet_name" {
-    description = "subname that the private endpoint will associate"
-    default = ""
+variable "vnet_address_prefixes" {
+    description = "vnet address prefix"
+    default = ["0.0.0.0/29"]
 }
 
-variable "dns_resource_group" {
+variable "subnet_name" {
+    description = "subnet name for private endpoint"
+}
+
+variable "subnet_number" {
+    description = "subnet number for private endpoint"
+    default = 0
+}
+
+variable "subnet_newbit" {
+    description = "subnet newbit for private endpoint"
+    default = 3
+}
+
+variable "nsg_name" {
+  description = "nsg to use on subnet"
+}
+
+variable "dns_resource_group_name" {
     description = "dns resource group"
-    default="domain-rg"
 }
 
 variable "subresource_names" {
@@ -83,25 +96,27 @@ variable "subresource_names" {
     default = ["sites"]
 }
 
-
 module "privatendpoint" {
-  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
+  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.x.x"
   providers = {
     azurerm.src = azurerm.alias
     azurerm.src = azurerm.alias
   }
   
-  dns_zone                        = "${var.dns_zone}"
-  vnet_link                       = "${var.vnet_link}"
+  dns_zone                        = "engineering or business"
+  vnet_link                       = "name for vnet link"
   location                        = "${var.location}"
   network_type                    = "${var.network_type}"
   private_connection              = "${var.private_connection}"
   zone_group                      = "${var.zone_group}"
-  pe_identity                     = "${var.pe_identity}"
-  pe_environment                  = "${var.pe_environment}"
-  pe_vnet_rg                      = "${var.pe_vnet_rg}"
-  pe_vnet_name                    = "${var.pe_vnet_name}"
-  pe_subnet_name                  = "${var.pe_subnet_name}"
-  dns_resource_group              = "some-rg"
+  private_endpoint_name           = "${var.private_endpoint_name}"
+  environment                     = "${var.environment}"
+  resource_group_name             = "${var.resource_group_name}"
+  vnet_name                       = "${var.vnet_name}"
+  subnet_name                     = "subnet_name"
+  subnet_number                   = "Position on subnet range"
+  subnet_newbit                   = "bit to add to address prefix"
+  nsg_name                        = "name for nsg"
+  dns_resource_group_name         = "${var.vnet_address_prefixes}"
   subresource_names               = ["sites"]
  }
