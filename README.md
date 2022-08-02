@@ -99,8 +99,8 @@ variable "subresource_names" {
 module "privatendpoint" {
   source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.x.x"
   providers = {
-    azurerm.src = azurerm.alias
-    azurerm.src = azurerm.alias
+    azurerm.hub = azurerm.hub
+    azurerm.spoke = azurerm.spokename
   }
   
   dns_zone                        = "engineering or business"
