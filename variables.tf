@@ -5,7 +5,6 @@ variable "dns_zone" {
 
 variable "vnet_link" {
     description = "alias of the virtual network link"
-    default = ""  
 }
 
 variable "location" {
@@ -24,37 +23,51 @@ variable "private_connection" {
 
 variable "zone_group" {
     description = "private dns zone group"
-    default = ""   
 }
 
-variable "pe_identity" {
-    description = "identity that will create all the private endpoint resources required"
-    default = ""
+variable "private_endpoint_name" {
+    description = "name that will be used to create the private endpoint resources required"
 }
 
-variable "pe_environment" {
+variable "environment" {
     description = "environment for private endpoint"
     default = "dev | prd | qa"
 }
 
-variable "pe_vnet_rg" {
+variable "resource_group_name" {
     description = "this is the rg for the spoke vnet"
-    default = ""
+    default = "m-spokeconfig-rg"
 }
 
-variable "pe_vnet_name" {
+variable "vnet_name" {
     description = "vnet name for the private endpoint"
-    default = ""
 }
 
-variable "pe_subnet_name" {
-    description = "subname that the private endpoint will associate"
-    default = ""
+variable "vnet_address_prefixes" {
+    description = "vnet address prefix"
+    default = ["0.0.0.0/29"]
 }
 
-variable "dns_resource_group" {
+variable "subnet_name" {
+    description = "subnet name for private endpoint"
+}
+
+variable "subnet_number" {
+    description = "subnet number for private endpoint"
+    default = 0
+}
+
+variable "subnet_newbit" {
+    description = "subnet newbit for private endpoint"
+    default = 3
+}
+
+variable "nsg_name" {
+  description = "nsg to use on subnet"
+}
+
+variable "dns_resource_group_name" {
     description = "dns resource group"
-    default="domain-rg"
 }
 
 variable "subresource_names" {
