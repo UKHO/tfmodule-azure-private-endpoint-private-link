@@ -1,5 +1,7 @@
 # Terraform Module: for Azure Private Endpoints
 
+## Please Keep Private Endpoint configuration separate with its own TFstae file. 
+
 ## Required Resources
 
 - `Resource Group` exists or is created external to the module.
