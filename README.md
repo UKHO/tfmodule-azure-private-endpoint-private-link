@@ -1,6 +1,6 @@
 # Terraform Module: for Azure Private Endpoints
 
-## Please Keep Private Endpoint configuration separate with its own TFstae file. 
+## Please Keep Private Endpoint configuration separate with its own TFstate file. 
 
 ## Required Resources
 
