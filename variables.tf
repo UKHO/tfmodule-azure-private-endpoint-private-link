@@ -61,7 +61,3 @@ variable "subresource_names" {
     description = "array of sub resources"
     default = ["sites"]
 }
-
-
-
-
