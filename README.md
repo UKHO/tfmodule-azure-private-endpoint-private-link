@@ -1,9 +1,12 @@
 # Terraform Module: for Azure Private Endpoints
 
+##
+
 ## Required Resources
 
 - `Resource Group` exists or is created external to the module.
 - `Provider` must be created external to the module.
+- `Grant terraform-service account permission to create records in the respective private dns zones.
 
 ## Usage
 
