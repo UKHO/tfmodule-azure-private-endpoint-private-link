@@ -52,16 +52,21 @@ variable "pe_subnet_name" {
     default = ""
 }
 
+variable "pe_resource_group" {
+  description = "value"
+  type = object({
+    name = string
+    location = string
+  })
+}
+
 variable "dns_resource_group" {
-    description = "dns resource group"
+    description = "dns resource group name, please change domain-rg to either business-rg or engineering-rg" 
     default="domain-rg"
 }
 
 variable "subresource_names" {
-    description = "array of sub resources"
+    description = "array of sub resources, if you require additional subresources please define"
     default = ["sites"]
 }
-
-
-
 
