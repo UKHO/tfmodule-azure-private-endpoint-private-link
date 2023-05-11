@@ -1,6 +1,6 @@
 locals {
   pe_name = "m-${var.pe_identity}-${var.pe_environment}-pe"
-  pe_rg_name = "m-${var.pe_identity}-rg" 
+  pe_rg_name = var.pe_resource_group.name
 }
 
 provider "azurerm" {
@@ -29,10 +29,10 @@ data "azurerm_subnet" "subnet" {
   resource_group_name  = data.azurerm_resource_group.main.name 
 }
 
-data "azurerm_resource_group" "rg" {
-  provider = azurerm.spoke 
-  name = local.pe_rg_name
-}
+#data "azurerm_resource_group" "rg" {
+#  provider = azurerm.spoke 
+#  name = local.pe_rg_name
+#}
 
 data "azurerm_resource_group" "dnsrg" {
   provider           = azurerm.hub
@@ -59,11 +59,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "main" {
 }
 
 resource "azurerm_private_endpoint" "main" {
-  depends_on          = [data.azurerm_resource_group.rg]
+  #depends_on         = [data.azurerm_resource_group.rg]
   provider            = azurerm.spoke
   name                = local.pe_name
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.pe_resource_group.location
+  resource_group_name = var.pe_resource_group.name
   subnet_id           = data.azurerm_subnet.subnet.id
   lifecycle { 
       ignore_changes = [

@@ -7,7 +7,9 @@
 
 ## Usage
 
-## Remember to disable network policies to add PE.
+## Remember to disable network policies to add PE. 
+
+## IMPORTANT - If you require DNS records and vnet links to be created in the private dns zones make sure the terraform-SOMETHING account has "read" over core services resource group (business-rg or engineering-rg) and "contributor" on the private dns zone you require.
 
 az network vnet subnet update --name SUBNETNAME-subnet --resource-group NAME-RG --vnet-name NAME-vnet --disable-private-endpoint-network-policies true
 False will re-enable
@@ -55,7 +57,7 @@ variable "pe_identity" {
 
 variable "pe_environment" {
     description = "environment for private endpoint"
-    default = "dev | prd | qa"
+    default = "dev | prd | qa | pre"
 }
 
 variable "pe_vnet_rg" {
@@ -73,6 +75,14 @@ variable "pe_subnet_name" {
     default = ""
 }
 
+variable "pe_resource_group" {
+  description = "value"
+  type = object({
+    name = string
+    location = string
+  })
+}
+
 variable "dns_resource_group" {
     description = "dns resource group"
     default="domain-rg"
@@ -85,7 +95,7 @@ variable "subresource_names" {
 
 
 module "privatendpoint" {
-  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.1.1"
+  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.4.0-beta.1"
   providers = {
     azurerm.src = azurerm.alias
     azurerm.src = azurerm.alias
@@ -98,6 +108,7 @@ module "privatendpoint" {
   private_connection              = "${var.private_connection}"
   zone_group                      = "${var.zone_group}"
   pe_identity                     = "${var.pe_identity}"
+  pe_resource_group               =  azurerm_resource_group.rg
   pe_environment                  = "${var.pe_environment}"
   pe_vnet_rg                      = "${var.pe_vnet_rg}"
   pe_vnet_name                    = "${var.pe_vnet_name}"
