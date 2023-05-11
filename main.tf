@@ -29,11 +29,6 @@ data "azurerm_subnet" "subnet" {
   resource_group_name  = data.azurerm_resource_group.main.name 
 }
 
-#data "azurerm_resource_group" "rg" {
-#  provider = azurerm.spoke 
-#  name = local.pe_rg_name
-#}
-
 data "azurerm_resource_group" "dnsrg" {
   provider           = azurerm.hub
   name               = var.dns_resource_group
@@ -59,7 +54,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "main" {
 }
 
 resource "azurerm_private_endpoint" "main" {
-  #depends_on         = [data.azurerm_resource_group.rg]
   provider            = azurerm.spoke
   name                = local.pe_name
   location            = var.pe_resource_group.location
