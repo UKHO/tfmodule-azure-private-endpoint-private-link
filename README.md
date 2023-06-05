@@ -10,7 +10,9 @@
 
 ## Usage
 
-## Remember to disable network policies to add PE. 
+## Remember to disable network policies to add PE.
+    #enforce_private_link_endpoint_network_policies = true  This need to be turned off to deploy pe, false to turn on.
+    #enforce_private_link_service_network_policies  = true -> false
 
 ## IMPORTANT - If you require DNS records and vnet links to be created in the private dns zones make sure the terraform-SOMETHING account has "read" over core services resource group (business-rg or engineering-rg) and "contributor" on the private dns zone you require.
 
