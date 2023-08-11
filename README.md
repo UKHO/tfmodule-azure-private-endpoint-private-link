@@ -80,14 +80,6 @@ variable "pe_subnet_name" {
     default = ""
 }
 
-variable "pe_resource_group" {
-  description = "value"
-  type = object({
-    name = string
-    location = string
-  })
-}
-
 variable "dns_resource_group" {
     description = "dns resource group"
     default="domain-rg"
@@ -99,25 +91,20 @@ variable "subresource_names" {
 }
 
 
-module "privatendpoint" {
-  source                        = "github.com/ukho/tfmodule-azure-private-endpoint?ref=0.4.0"
+module "private_endpoint_link" {
+  source              = "github.com/UKHO/tfmodule-azure-private-endpoint-private-link?ref=0.4.0"
   providers = {
-    azurerm.src = azurerm.alias
+    azurerm.src   = azurerm.alias
     azurerm.src = azurerm.alias
   }
-  
-  dns_zone                        = "${var.dns_zone}"
-  vnet_link                       = "${var.vnet_link}"
-  location                        = "${var.location}"
-  network_type                    = "${var.network_type}"
-  private_connection              = "${var.private_connection}"
-  zone_group                      = "${var.zone_group}"
-  pe_identity                     = "${var.pe_identity}"
-  pe_resource_group               =  azurerm_resource_group.rg
-  pe_environment                  = "${var.pe_environment}"
-  pe_vnet_rg                      = "${var.pe_vnet_rg}"
-  pe_vnet_name                    = "${var.pe_vnet_name}"
-  pe_subnet_name                  = "${var.pe_subnet_name}"
-  dns_resource_group              = "some-rg"
-  subresource_names               = ["sites"]
- }
+  vnet_link           = local.vnet_link 
+  private_connection  = local.private_connection 
+  zone_group          = local.zone_group 
+  pe_identity         = local.pe_identity 
+  pe_environment      = local.pe_environment 
+  pe_vnet_rg          = local.pe_vnet_rg  
+  pe_vnet_name        = local.pe_vnet_name 
+  pe_subnet_name      = local.pe_subnet_name
+  pe_resource_group   = azurerm_resource_group.perg
+  dns_resource_group  = local.dns_resource_group
+}
