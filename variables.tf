@@ -67,6 +67,6 @@ variable "dns_resource_group" {
 
 variable "subresource_names" {
     description = "array of sub resources, if you require additional subresources please define"
-    default = ["sites"]
+    default = ["staticSites"]
 }
 
