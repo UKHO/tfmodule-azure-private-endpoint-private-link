@@ -46,9 +46,9 @@ variable "network_type" {
 }
 
 variable "private_connection" {
-    description = "endpoint resource id"
+    description = "endpoint resource id (for example [/subscriptions/SUBID/resourceGroups/RGNAME/providers/Microsoft.Web/sites/APP_SERVICE_NAME])"
     type        = list(string)
-    default = ["/subscriptions/SUBID/resourceGroups/RGNAME/providers/Microsoft.Web/sites/APP_SERVICE_NAME"]
+    default = ""
 }
 
 variable "zone_group" {
@@ -62,8 +62,8 @@ variable "pe_identity" {
 }
 
 variable "pe_environment" {
-    description = "environment for private endpoint"
-    default = "dev | prd | qa"
+    description = "environment for private endpoint (for example dev | prd | qa | pre)"
+    default = ""
 }
 
 variable "pe_vnet_rg" {
@@ -77,7 +77,7 @@ variable "pe_vnet_name" {
 }
 
 variable "pe_subnet_name" {
-    description = "subname that the private endpoint will associate"
+    description = "subnet name that the private endpoint will associate"
     default = ""
 }
 
@@ -90,8 +90,8 @@ variable "pe_resource_group" {
 }
 
 variable "dns_resource_group" {
-    description = "dns resource group name, please change domain-rg to either business-rg or engineering-rg" 
-    default="domain-rg"
+    description = "dns resource group name, please change default to either business-rg or engineering-rg" 
+    default = ""
 }
 
 variable "subresource_names" {
@@ -104,7 +104,7 @@ module "private_endpoint_link" {
   source              = "github.com/UKHO/tfmodule-azure-private-endpoint-private-link?ref=0.5.0"
   providers = {
     azurerm.src   = azurerm.alias
-    azurerm.src = azurerm.alias
+    azurerm.src   = azurerm.alias
   }
   vnet_link           = local.vnet_link
   private_connection  = [local.private_connection]
