@@ -46,8 +46,9 @@ variable "network_type" {
 }
 
 variable "private_connection" {
-    description = "endpoint resource id"	 
-    default = "/subscriptions/SUBID/resourceGroups/RGNAME/providers/Microsoft.Web/sites/APP_SERVICE_NAME" 
+    description = "endpoint resource id"
+    type        = list(string)
+    default = ["/subscriptions/SUBID/resourceGroups/RGNAME/providers/Microsoft.Web/sites/APP_SERVICE_NAME"]
 }
 
 variable "zone_group" {
@@ -62,7 +63,7 @@ variable "pe_identity" {
 
 variable "pe_environment" {
     description = "environment for private endpoint"
-    default = "dev | prd | qa | pre"
+    default = "dev | prd | qa"
 }
 
 variable "pe_vnet_rg" {
@@ -80,31 +81,39 @@ variable "pe_subnet_name" {
     default = ""
 }
 
+variable "pe_resource_group" {
+  description = "value"
+  type = object({
+    name = string
+    location = string
+  })
+}
+
 variable "dns_resource_group" {
-    description = "dns resource group"
+    description = "dns resource group name, please change domain-rg to either business-rg or engineering-rg" 
     default="domain-rg"
 }
 
 variable "subresource_names" {
-    description = "array of sub resources"
+    description = "array of sub resources, if you require additional subresources please define"
     default = ["sites"]
 }
 
 
 module "private_endpoint_link" {
-  source              = "github.com/UKHO/tfmodule-azure-private-endpoint-private-link?ref=0.4.0"
+  source              = "github.com/UKHO/tfmodule-azure-private-endpoint-private-link?ref=0.5.0"
   providers = {
     azurerm.src   = azurerm.alias
     azurerm.src = azurerm.alias
   }
-  vnet_link           = local.vnet_link 
-  private_connection  = local.private_connection 
+  vnet_link           = local.vnet_link
+  private_connection  = [local.private_connection]
   zone_group          = local.zone_group 
-  pe_identity         = local.pe_identity 
+  pe_identity         = [local.pe_identity] 
   pe_environment      = local.pe_environment 
   pe_vnet_rg          = local.pe_vnet_rg  
-  pe_vnet_name        = local.pe_vnet_name 
+  pe_vnet_name        = local.pe_vnet_name
   pe_subnet_name      = local.pe_subnet_name
-  pe_resource_group   = azurerm_resource_group.perg
+  pe_resource_group   = data.azurerm_resource_group.perg
   dns_resource_group  = local.dns_resource_group
 }
