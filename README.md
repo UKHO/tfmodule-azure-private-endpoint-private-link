@@ -101,7 +101,7 @@ variable "subresource_names" {
 
 
 module "private_endpoint_link" {
-  source              = "github.com/UKHO/tfmodule-azure-private-endpoint-private-link?ref=0.5.0"
+  source              = "github.com/UKHO/tfmodule-azure-private-endpoint-private-link?ref=0.6.0"
   providers = {
     azurerm.src   = azurerm.alias
     azurerm.src   = azurerm.alias
