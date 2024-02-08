@@ -48,7 +48,7 @@ variable "network_type" {
 variable "private_connection" {
     description = "endpoint resource id (for example [/subscriptions/SUBID/resourceGroups/RGNAME/providers/Microsoft.Web/sites/APP_SERVICE_NAME])"
     type        = list(string)
-    default = ""
+    default = [""]
 }
 
 variable "zone_group" {
