@@ -54,11 +54,9 @@ variable "pe_subnet_name" {
 }
 
 variable "pe_resource_group" {
-  description = "value"
-  type        = object({
-    name      = string
-    location  = string
-  })
+    description = "value"
+    type        = list(string)
+    default     = [""]
 }
 
 variable "dns_resource_group" {
