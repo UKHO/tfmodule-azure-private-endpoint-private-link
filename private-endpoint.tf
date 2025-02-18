@@ -6,7 +6,7 @@ resource "azurerm_private_endpoint" "main" {
   provider            = azurerm.spoke
   name                = "m-${var.pe_identity[count.index]}-${var.pe_environment}-pe"
   count               = length(var.pe_identity)
-  location            = var.pe_resource_group.location
+  location            = var.pe_resource_group_locations[count.index]
   resource_group_name = var.pe_resource_group[count.index]
   subnet_id           = data.azurerm_subnet.subnet.id
   lifecycle { 

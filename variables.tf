@@ -52,13 +52,16 @@ variable "pe_subnet_name" {
     description = "subname that the private endpoint will associate"
     default     = ""
 }
-
+variable "pe_resource_group_locations" {
+    description = "List of resource group names"
+    type        = list(string)
+    default     = [""]
+}
 variable "pe_resource_group" {
     description = "List of resource group names"
     type        = list(string)
     default     = [""]
 }
-
 
 variable "dns_resource_group" {
     description = "dns resource group name, please change domain-rg to either business-rg or engineering-rg"
