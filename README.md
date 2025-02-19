@@ -81,12 +81,15 @@ variable "pe_subnet_name" {
     default = ""
 }
 
+variable "pe_resource_group_locations" {
+    description = "List of resource group names"
+    type        = list(string)
+    default     = [""]
+}
 variable "pe_resource_group" {
-  description = "value"
-  type = object({
-    name = string
-    location = string
-  })
+    description = "List of resource group names"
+    type        = list(string)
+    default     = [""]
 }
 
 variable "dns_resource_group" {
@@ -114,6 +117,13 @@ module "private_endpoint_link" {
   pe_vnet_rg          = local.pe_vnet_rg  
   pe_vnet_name        = local.pe_vnet_name
   pe_subnet_name      = local.pe_subnet_name
-  pe_resource_group   = data.azurerm_resource_group.perg
   dns_resource_group  = local.dns_resource_group
+  pe_resource_group  = [
+  azurerm_resource_group.example1.name,
+  azurerm_resource_group.example2.name
+]
+pe_resource_group_locations = [
+    azurerm_resource_group.example1.location,
+    azurerm_resource_group.example2.location
+  ]
 }
