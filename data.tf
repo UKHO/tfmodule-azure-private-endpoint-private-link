@@ -16,4 +16,13 @@ data "azurerm_subnet" "subnet" {
   resource_group_name  = data.azurerm_resource_group.main.name
 }
 
+data "azurerm_resource_group" "dnsrg" {
+  provider = azurerm.hub
+  name     = var.dns_resource_group
+}
 
+data "azurerm_private_dns_zone" "main" {
+  provider            = azurerm.hub
+  name                = var.dns_zone
+  resource_group_name = data.azurerm_resource_group.dnsrg.name
+} 
