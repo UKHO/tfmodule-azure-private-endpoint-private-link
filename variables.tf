@@ -3,11 +3,6 @@ variable "dns_zone" {
     default     = "privatelink.azurewebsites.net"
 }
 
-variable "vnet_link" {
-    description = "alias of the virtual network link"
-    default     = ""
-}
-
 variable "location" {
     default = "uksouth"
 }
