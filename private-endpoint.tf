@@ -11,10 +11,10 @@ resource "azurerm_private_endpoint" "main" {
   subnet_id           = data.azurerm_subnet.subnet.id
   lifecycle { 
     ignore_changes = [
-      tags
+      tags,
+      private_link_id
     ] 
-    prevent_destroy = true
-  }  
+  }
 
   private_service_connection {
     name                           = var.network_type
