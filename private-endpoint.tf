@@ -12,10 +12,9 @@ resource "azurerm_private_endpoint" "main" {
   lifecycle { 
     ignore_changes = [
       tags,
-      private_dns_zone_group,
-      private_service_connection,
+      virtual_network_id,
       subnet_id
-    ] 
+    ]
   }
 
   private_service_connection {
