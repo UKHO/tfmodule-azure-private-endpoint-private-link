@@ -12,7 +12,6 @@ resource "azurerm_private_endpoint" "main" {
   lifecycle { 
     ignore_changes = [
       tags,
-      virtual_network_id,
       subnet_id
     ]
   }
