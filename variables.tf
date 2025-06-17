@@ -68,3 +68,7 @@ variable "subresource_names" {
     default     = ["sites"]
 }
 
+variable "ignore_changes_lis_pe" {
+    type    = list(string)
+    default = ["tags"]  # Default to ignoring only tags
+}

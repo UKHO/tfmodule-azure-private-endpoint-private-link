@@ -9,11 +9,8 @@ resource "azurerm_private_endpoint" "main" {
   location            = var.pe_resource_group_locations[count.index]
   resource_group_name = var.pe_resource_group[count.index]
   subnet_id           = data.azurerm_subnet.subnet.id
-  lifecycle { 
-    ignore_changes = [
-      tags,
-      subnet_id
-    ]
+  lifecycle {
+    ignore_changes = var.ignore_changes_lis_pe
   }
 
   private_service_connection {
