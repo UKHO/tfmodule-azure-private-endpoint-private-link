@@ -67,8 +67,3 @@ variable "subresource_names" {
     description = "array of sub resources, if you require additional subresources please define"
     default     = ["sites"]
 }
-
-variable "ignore_changes_list_pe" {
-    type    = list(string)
-    default = ["tags"]
-}
