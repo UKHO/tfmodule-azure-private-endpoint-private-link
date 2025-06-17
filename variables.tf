@@ -69,6 +69,6 @@ variable "subresource_names" {
 }
 
 variable "ignore_changes_list_pe" {
-    type = list(list(string))
-    default = [["tags"]]
+    type    = list(string)
+    default = ["tags"]
 }
